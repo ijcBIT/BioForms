@@ -516,7 +516,7 @@ function getFrontendEnvVar(varNameSuffix) {
 // Get environment variables
 let envConfig = {
   'CEDAR_ANALYTICS_KEY'       : null,
-  'CEDAR_GA4_TRACKING_ID'     : null,
+//  'CEDAR_GA4_TRACKING_ID'     : null,
   'CEDAR_FRONTEND_BEHAVIOR'   : null,
   'CEDAR_FRONTEND_TARGET'     : null,
   'CEDAR_VERSION'             : null,
