@@ -229,7 +229,7 @@ gulp.task('replace-version', function (done) {
       .pipe(replace('cedarVersionValue', cedarVersion))
       .pipe(replace('cedarVersionModifierValue', `${timestamp}`))
       .pipe(replace('dataciteEnabledValue', dataciteEnabled))
-      .pipe(replace('cedarGA4TrackingIdValue', cedarGA4TrackingId))
+      //.pipe(replace('cedarGA4TrackingIdValue', cedarGA4TrackingId))
       .pipe(gulp.dest('app/config/'));
   done();
 });
@@ -530,7 +530,7 @@ console.log(
 console.log("- Starting CEDAR front end server...".green);
 readAllEnvVarsOrFail();
 const cedarAnalyticsKey = envConfig['CEDAR_ANALYTICS_KEY'];
-const cedarGA4TrackingId = envConfig['CEDAR_GA4_TRACKING_ID'];
+//const cedarGA4TrackingId = envConfig['CEDAR_GA4_TRACKING_ID'];
 const cedarFrontendBehavior = envConfig['CEDAR_FRONTEND_BEHAVIOR'];
 const cedarFrontendTarget = envConfig['CEDAR_FRONTEND_TARGET'];
 const cedarVersion = envConfig['CEDAR_VERSION'];
