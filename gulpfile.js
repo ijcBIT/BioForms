@@ -196,21 +196,20 @@ gulp.task('html', function (done) {
 // Task to replace service URLs
 gulp.task('replace-url', function (done) {
   gulp.src(['app/config/src/url-service.conf.json'])
-//      .pipe(replace('templateServerUrl', 'https://template.' + cedarRestHost))
-      .pipe(replace('resourceServerUrl', ''))
-      .pipe(replace('userServerUrl', ''))
-      .pipe(replace('terminologyServerUrl', 'https://terminology.metadatacenter.org'))
-      // .pipe(replace('resourceServerUrl', 'https://resource.' + cedarRestHost))
-      // .pipe(replace('valueRecommenderServerUrl', 'https://valuerecommender.' + cedarRestHost))
-      // .pipe(replace('groupServerUrl', 'https://group.' + cedarRestHost))
-      // .pipe(replace('schemaServerUrl', 'https://schema.' + cedarRestHost))
-      // .pipe(replace('submissionServerUrl', 'https://submission.' + cedarRestHost))
-      // .pipe(replace('messagingServerUrl', 'https://messaging.' + cedarRestHost))
-      // .pipe(replace('openViewBaseUrl', 'https://openview.' + cedarRestHost))
-      // .pipe(replace('impexServerUrl', 'https://impex.' + cedarRestHost))
-      // .pipe(replace('artifactsFrontendUrl', 'https://artifacts.' + cedarRestHost))
-      // .pipe(replace('dataciteDOIBaseUrl', 'https://bridging.' + cedarRestHost + '/doi/datacite'))
-      // .pipe(replace('downloadBaseUrl', 'https://bridging.' + cedarRestHost + '/resources/download'))
+      .pipe(replace('templateServerUrl', 'https://template.' + cedarRestHost))
+      .pipe(replace('resourceServerUrl', 'https://resource.' + cedarRestHost))
+      .pipe(replace('userServerUrl', 'https://user.' + cedarRestHost))
+      .pipe(replace('terminologyServerUrl', 'https://terminology.' + cedarRestHost))
+      .pipe(replace('valueRecommenderServerUrl', 'https://valuerecommender.' + cedarRestHost))
+      .pipe(replace('groupServerUrl', 'https://group.' + cedarRestHost))
+      .pipe(replace('schemaServerUrl', 'https://schema.' + cedarRestHost))
+      .pipe(replace('submissionServerUrl', 'https://submission.' + cedarRestHost))
+      .pipe(replace('messagingServerUrl', 'https://messaging.' + cedarRestHost))
+      .pipe(replace('openViewBaseUrl', 'https://openview.' + cedarRestHost))
+      .pipe(replace('impexServerUrl', 'https://impex.' + cedarRestHost))
+      .pipe(replace('artifactsFrontendUrl', 'https://artifacts.' + cedarRestHost))
+      .pipe(replace('dataciteDOIBaseUrl', 'https://bridging.' + cedarRestHost + '/doi/datacite'))
+      .pipe(replace('downloadBaseUrl', 'https://bridging.' + cedarRestHost + '/resources/download'))
       .pipe(gulp.dest('app/config/'));
   done();
 });
@@ -230,6 +229,7 @@ gulp.task('replace-version', function (done) {
       .pipe(replace('cedarVersionValue', cedarVersion))
       .pipe(replace('cedarVersionModifierValue', `${timestamp}`))
       .pipe(replace('dataciteEnabledValue', dataciteEnabled))
+      .pipe(replace('cedarGA4TrackingIdValue', cedarGA4TrackingId))
       .pipe(gulp.dest('app/config/'));
   done();
 });
@@ -259,7 +259,7 @@ gulp.task('karma-tests', function (done) {
 
 gulp.task('test-env', function (done) {
   gulp.src(['tests/config/src/test-env.js'], {allowEmpty:true})
-      //.pipe(replace('protractorBaseUrl', 'https://cedar.' + cedarUIHost))
+      .pipe(replace('protractorBaseUrl', 'https://cedar.' + cedarUIHost))
       .pipe(replace('protractorTestUser1Login', cedarTestUser1Login))
       .pipe(replace('protractorTestUser1Password', cedarTestUser1Password))
       .pipe(replace('protractorTestUser1Name', cedarTestUser1Name))
@@ -516,6 +516,7 @@ function getFrontendEnvVar(varNameSuffix) {
 // Get environment variables
 let envConfig = {
   'CEDAR_ANALYTICS_KEY'       : null,
+  'CEDAR_GA4_TRACKING_ID'     : null,
   'CEDAR_FRONTEND_BEHAVIOR'   : null,
   'CEDAR_FRONTEND_TARGET'     : null,
   'CEDAR_VERSION'             : null,
@@ -529,16 +530,17 @@ console.log(
 console.log("- Starting CEDAR front end server...".green);
 readAllEnvVarsOrFail();
 const cedarAnalyticsKey = envConfig['CEDAR_ANALYTICS_KEY'];
+const cedarGA4TrackingId = envConfig['CEDAR_GA4_TRACKING_ID'];
 const cedarFrontendBehavior = envConfig['CEDAR_FRONTEND_BEHAVIOR'];
 const cedarFrontendTarget = envConfig['CEDAR_FRONTEND_TARGET'];
 const cedarVersion = envConfig['CEDAR_VERSION'];
 //const cedarVersionModifier = envConfig['CEDAR_VERSION_MODIFIER'];
 const dataciteEnabled = envConfig['CEDAR_DATACITE_ENABLED'];
 
-// var cedarUIHostVarName = getFrontendEnvVar('UI_HOST');
-// envConfig[cedarUIHostVarName] = null;
-// var cedarRestHostVarName = getFrontendEnvVar('REST_HOST');
-// envConfig[cedarRestHostVarName] = null;
+var cedarUIHostVarName = getFrontendEnvVar('UI_HOST');
+envConfig[cedarUIHostVarName] = null;
+var cedarRestHostVarName = getFrontendEnvVar('REST_HOST');
+envConfig[cedarRestHostVarName] = null;
 
 var cedarUser1LoginVarName = getFrontendEnvVar('USER1_LOGIN');
 envConfig[cedarUser1LoginVarName] = null;
@@ -556,8 +558,8 @@ envConfig[cedarUser2NameVarName] = null;
 
 readAllEnvVarsOrFail();
 
-// var cedarUIHost = envConfig[cedarUIHostVarName];
-// var cedarRestHost = envConfig[cedarRestHostVarName];
+var cedarUIHost = envConfig[cedarUIHostVarName];
+var cedarRestHost = envConfig[cedarRestHostVarName];
 
 var cedarTestUser1Login = envConfig[cedarUser1LoginVarName];
 var cedarTestUser1Password = envConfig[cedarUser1PasswordVarName];
