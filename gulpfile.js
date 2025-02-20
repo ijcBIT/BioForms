@@ -36,7 +36,8 @@ const paths = {
     './app/**/*.css', 
     '!./app/bower_components/**/*.*',
     '!./app/config/**/*.*',
-    '!./app/index.html'],      
+    '!./app/index.html',
+    './app/config/version.js'],      
   html: './dist/**/*.html',      // Path to AngularJS templates and index.html
   scripts: './dist/**/*.js',     // Path to AngularJS scripts
   css: './dist/css/*.css',       // Path to css files
