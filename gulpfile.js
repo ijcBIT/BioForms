@@ -114,7 +114,6 @@ gulp.task('lint', function (done) {
         sourceRoot: '/scripts'  // Adjust this to match the server's root
       }))
       .pipe(connect.reload());
-  done();
 });
 
 // Compile LESS files
@@ -132,7 +131,6 @@ gulp.task('less', function (done) {
       .pipe(sourcemaps.write('.')) // Write sourcemaps to the same directory as the output file      
       .pipe(gulp.dest('app/css'))
       .pipe(connect.reload());
-  done();
 });
 
 gulp.task('copy:resources', function () {
@@ -191,7 +189,6 @@ gulp.task('server-development', function (done) {
 gulp.task('html', function (done) {
   return gulp.src('/app/views/*.html')
       .pipe(connect.reload());
-  done();
 });
 
 // Task to replace service URLs
@@ -226,13 +223,12 @@ gulp.task('replace-tracking', function (done) {
 // Task to set up version numbers in included js file
 gulp.task('replace-version', function (done) {
   const timestamp = Date.now(); // Generate a unique timestamp
-  gulp.src(['app/config/src/version.js'])
+  return gulp.src(['app/config/src/version.js'])
       .pipe(replace('cedarVersionValue', cedarVersion))
       .pipe(replace('cedarVersionModifierValue', `${timestamp}`))
       .pipe(replace('dataciteEnabledValue', dataciteEnabled))
       //.pipe(replace('cedarGA4TrackingIdValue', cedarGA4TrackingId))
       .pipe(gulp.dest('app/config/'));
-  done();
 });
 
 // Watch files for changes
