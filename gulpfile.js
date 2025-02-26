@@ -144,12 +144,30 @@ gulp.task('server-development', function (done) {
 
   connect.server({
     root: 'app', // Path to serve static files from
-    port: 4200, // Development server port
+    port: 80, // Development server port
     livereload: true, // Enable live reload
     fallback: 'app/index.html', // SPA fallback for AngularJS routes
     host: '0.0.0.0', // Listen on all interfaces
     middleware: function (connect, opt) {
       return [
+        function (req, res, next) {
+          const host = req.headers.host; // Gets the current host (e.g., localhost:4200, or a cloud-hosted URL)
+          const protocol = req.headers['x-forwarded-proto'] || 'http'; // Detects HTTPS if behind a proxy
+            
+          if (req.url === '/genomica') {
+            const newLocation = '/instances/create/https://repo.metadatacenter.org/templates/3ae58251-34c2-4a0d-840d-cb17ea441ea0?folderId=https:%2F%2Frepo.metadatacenter.org%2Ffolders%2F2b1d7669-c3eb-4571-b22c-ec1c2cf0aeef';
+            const redirectUrl = `${protocol}://${host}` + newLocation;
+            res.writeHead(302, { Location: redirectUrl});
+            res.end();
+          } if (req.url === '/test') {
+            const newLocation = '/instances/create/https://repo.metadatacenter.org/templates/efd7602c-4a02-45b6-a665-b5fb3360f066?folderId=https:%2F%2Frepo.metadatacenter.org%2Ffolders%2F02d81b00-f4b4-4467-8721-72a90c7998c2';
+            const redirectUrl = `${protocol}://${host}` + newLocation;
+            res.writeHead(302, { Location: redirectUrl});
+            res.end();
+          } else {
+            next();
+          }
+        },
         // Proxy for /templates requests
         createProxyMiddleware({
           target: 'http://localhost:3000',

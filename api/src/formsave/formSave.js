@@ -18,19 +18,23 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Define path for the responses folder
-const RESPONSES_FOLDER = path.join(__dirname, '../../responses');
 const JSON_RESPONSES_FOLDER = path.join(__dirname, '../../responses_json');
 
 // Promisify the writeFile method for async/await usage
 const writeFileAsync = promisify(fs.writeFile);
 
 // Function to search for the project and investigator
-function findProjectAndInvestigator(jsonData) {
+function GetTemplateId(jsonData) {
 
+    // The default option is to the the Project Name an the PI name
     const projectName = jsonData['Project Name']?.['@value'] || '';
-    const principalInvestigator = jsonData.IJC_contact_info_mandatory?.Name?.['@value'] || '';
-   
-    return `${projectName}-${principalInvestigator}`;
+    let principalInvestigator = jsonData.IJC_contact_info_mandatory1?.Name?.['@value'] || '';
+    principalInvestigator += jsonData.IJC_contact_info_mandatory1?.["Surname(s)"]?.['@value'] || '';
+    if (projectName)
+        return `${projectName}-${principalInvestigator}`;
+
+    // If no project name, take the value for the first field
+    return Object.values(jsonData)[1]?.['@value'] || '';
 }
 
 // Function to get current date and time for a filename
@@ -71,21 +75,24 @@ export async function formSave(req, res) {
     const jsonData = req.body;
 
     // Validate input
-    if (!jsonData || !jsonData.instance || !jsonData.template) {
+    if (!jsonData || !jsonData.folder || !jsonData.instance || !jsonData.template) {
         return res.status(400).json({ message: 'Invalid payload' });
     }
 
     // Get the current year from the system date
     const currentYear = new Date().getFullYear();
     
+    // Get the folder where the template should be written to
+    const templateFolder = sanitize(jsonData.template["schema:name"]) + '_' + decodeURIComponent(jsonData.folder).split("folders/")[1];
+    
     // Create folder path dynamically for JSON responses
-    const jsonFolderPath = path.join(JSON_RESPONSES_FOLDER, currentYear.toString());
+    const jsonFolderPath = path.join(JSON_RESPONSES_FOLDER, templateFolder, currentYear.toString());
 
     // Ensure folders exist
     await createFolderIfNotExists(jsonFolderPath);
 
     // Save JSON data into the appropriate year folder
-    const fileName = sanitize(`${getCurrentDateFilename()}_${findProjectAndInvestigator(jsonData.instance)}`).replaceAll(" ","_");
+    const fileName = sanitize(`${getCurrentDateFilename()}_${GetTemplateId(jsonData.instance)}`).replaceAll(" ","_");
     const timestamp = Date.now(); // Generate timestamp to not override files from the same date
     const jsonFilePath = path.join(jsonFolderPath, `${fileName}.${timestamp}.json`);
 
@@ -101,11 +108,10 @@ export async function formSave(req, res) {
     dataArray.values.unshift(dataArray.header);
 
     // Define the output Excel file path
-    const excelFolderPath = path.join(RESPONSES_FOLDER, currentYear.toString());
+    const excelFolderPath = path.join(templateFolder, currentYear.toString());
     const excelFilePath = path.join(excelFolderPath, `${fileName}.xlsx`);
     try {
         // Write the workbook back to the file
-        //XLSX.writeFile(workbook, excelFilePath);
         const response = await handleExcelUpload(excelFilePath, dataArray.values);
 
         // If everithing goes fine, send the email to notify the form submission

@@ -61,7 +61,8 @@ define([
     TrackingService.init();
     MessagingService.init();
 
-    $location.url('/instances/create/https://repo.metadatacenter.org/templates/3ae58251-34c2-4a0d-840d-cb17ea441ea0?folderId=https:%2F%2Frepo.metadatacenter.org%2Ffolders%2F2b1d7669-c3eb-4571-b22c-ec1c2cf0aeef');
+    if ($location.path() === '/')
+      $location.url('/instances/create/https://repo.metadatacenter.org/templates/3ae58251-34c2-4a0d-840d-cb17ea441ea0?folderId=https:%2F%2Frepo.metadatacenter.org%2Ffolders%2F2b1d7669-c3eb-4571-b22c-ec1c2cf0aeef');
 
     // Make objects available through rootScope
     //$rootScope.cts = ControlledTermService;

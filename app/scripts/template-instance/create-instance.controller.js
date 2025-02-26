@@ -226,8 +226,9 @@ define([
             $scope.enableSaveButton();
           }
         };
-        // Combine template and instance into an array
+        // Combine folder, template and instance into an array
         let data = {
+          folder: QueryParamUtilsService.getFolderId() || CedarUser.getHomeFolderId(),
           instance: $scope.instance,
           template: $rootScope.jsonToSave
         };
@@ -261,7 +262,6 @@ define([
         UIMessageService.flashSuccess('SERVER.INSTANCE.update.success', null, 'GENERIC.Updated');
         $rootScope.$broadcast("form:clean");
         $rootScope.$broadcast('submitForm');
-
         doSharepointUpdate();
       };
 

@@ -38,7 +38,7 @@ define(['angular'], function (angular) {
       };
       // Set isValueRecommendationEnabled using the templateId
       service.canGenerateRecommendations(templateId).then(function (results) {
-        if (results['canGenerateRecommendations']) {
+        if (results && results['canGenerateRecommendations']) {
           canGenerateRecommendations = results['canGenerateRecommendations'];
         }
         else {

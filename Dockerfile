@@ -201,3 +201,6 @@ SHELL ["/bin/bash", "-c"]
 # Add ll alias in the .bashrc
 RUN echo "alias ll='ls -lsatr'" >> ~/.bashrc
 
+# Run the node server but not the nginx
+CMD ["bash", "-c", "node api/src/index.js'"]
+

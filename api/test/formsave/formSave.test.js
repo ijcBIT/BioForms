@@ -10979,7 +10979,7 @@ const basicTemplate = {
 //   writeFileAsync: vi.fn(),
 //   handleExcelUpload: vi.fn(),
 //   getCurrentDateTimeForFilename: vi.fn().mockReturnValue('20231031_1500'),
-//   findProjectAndInvestigator: vi.fn().mockReturnValue('project_investigator')
+//   GetTemplateId: vi.fn().mockReturnValue('project_investigator')
 // }));
 
 // Helper functions to create mock request and response objects

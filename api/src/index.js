@@ -38,15 +38,11 @@ const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Define path for templates folder
-const TEMPLATES_FOLDER = path.join(__dirname, '../templates');
-
 // Increase the limit for JSON requests to 50MB
 app.use(bodyParser.json({ limit: '50mb' }));  // for JSON data
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));  // for form data
 
 
-// Serve static files from the templates folder
 
 // API endpoint to save form data as an Excel file
 app.get('/users', async (req, res) => {
