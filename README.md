@@ -15,6 +15,9 @@ Our institute, [IJC](https://www.carrerasresearch.org/), required a tool that co
 1. **Look and Feel** - Customizing the UI to match our institute's design and enhancing spreadsheet functionality for bulk sample entry.
 2. **Integration with Office 365** - Enabling form submission results to be exported in Excel format and stored in a dedicated SharePoint site.
 
+## Architecture
+<img src="doc/architecture/architecture.drawio.svg">
+
 ## Key Enhancements
 
 ### 1. UI Customization

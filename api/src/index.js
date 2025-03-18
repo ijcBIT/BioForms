@@ -43,12 +43,6 @@ app.use(bodyParser.json({ limit: '50mb' }));  // for JSON data
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));  // for form data
 
 
-
-// API endpoint to save form data as an Excel file
-app.get('/users', async (req, res) => {
-    formSave(req, res);
-});
-
 // API endpoint to save form data as an Excel file
 app.post('/api/formsave', async (req, res) => {
     formSave(req, res);
