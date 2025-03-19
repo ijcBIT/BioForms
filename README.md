@@ -1,6 +1,15 @@
-# ijcBIT-cedar-template-editor
+# BioForms
 
 This project is a customized fork of the [CEDAR Template Editor](https://github.com/metadatacenter/cedar-template-editor), originally developed by the [CEDAR Project](https://metadatacenter.org/) at Stanford University.
+
+# Table of Contents
+1. [About the CEDAR Project](#about-the-cedar-project)
+2. [Purpose of This Fork](#purpose-of-this-fork)
+3. [Bioforms Architecture](#bioforms-architecture)
+4. [Key Enhancements](#key-enhancements)
+5. [Setting Up SharePoint Integration](#setting-up-sharepoint-integration)
+6. [Handling Multiple Templates](#handling-multiple-templates)
+
 
 ## About the CEDAR Project
 
@@ -15,7 +24,7 @@ Our institute, [IJC](https://www.carrerasresearch.org/), required a tool that co
 1. **Look and Feel** - Customizing the UI to match our institute's design and enhancing spreadsheet functionality for bulk sample entry.
 2. **Integration with Office 365** - Enabling form submission results to be exported in Excel format and stored in a dedicated SharePoint site.
 
-## Architecture
+## Bioforms Architecture
 <img src="doc/architecture/architecture.drawio.svg">
 
 ## Key Enhancements
@@ -95,6 +104,72 @@ To enable SharePoint integration, follow these steps:
   >   ```
   >   GET https://graph.microsoft.com/v1.0/sites/{siteId}/drive
   >   ```
+
+## Handling Multiple Templates
+
+This guide explains how to manage multiple templates in BioForms by configuring NGINX and ensuring proper storage in CEDAR and SharePoint.
+
+### 1. Prerequisites
+- A BioForms account with access to CEDAR.
+- A configured CEDAR directory for storing responses.
+- NGINX installed and configured on your server.
+- Access to a SharePoint server for storing Excel-formatted responses.
+
+### 2. Creating a CEDAR Template and Directory
+1. **Login to CEDAR** using the same account as BioForms.
+2. **Create a new template** by following the CEDAR User Guide: [CEDAR User Guide](https://metadatacenter.readthedocs.io/en/latest/user-overview/)
+3. **Copy the template ID** from the template URL, which follows this format:
+   ```
+   https://repo.metadatacenter.org/templates/{TEMPLATE_ID}
+   ```
+   Example:
+   ```
+   https://repo.metadatacenter.org/templates/3ae58251-34c2-4a0d-840d-cb17ea441ea0
+   ```
+4. **Create a directory** for storing responses and copy the folder ID:
+   ```
+   https:%2F%2Frepo.metadatacenter.org%2Ffolders%2F{FOLDER_ID}
+   ```
+   Example:
+   ```
+   https:%2F%2Frepo.metadatacenter.org%2Ffolders%2F2b1d7669-c3eb-4571-b22c-ec1c2cf0aeef
+   ```
+
+### 3. Configuring NGINX for Multiple Templates
+To enable access to different templates using URL endpoints, update the NGINX configuration file (`config/default.conf`) with entries for each template.
+
+#### Example NGINX Configuration:
+```nginx
+# Redirect genomica to its template
+location /genomica {
+    add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate";
+    expires 0;
+    return 302 $scheme://$host/instances/create/https://repo.metadatacenter.org/templates/3ae58251-34c2-4a0d-840d-cb17ea441ea0?folderId=https:%2F%2Frepo.metadatacenter.org%2Ffolders%2F2b1d7669-c3eb-4571-b22c-ec1c2cf0aeef;
+}
+
+# Redirect test to its template
+location /test {
+    add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate";
+    expires 0;
+    return 302 $scheme://$host/instances/create/https://repo.metadatacenter.org/templates/efd7602c-4a02-45b6-a665-b5fb3360f066?folderId=https:%2F%2Frepo.metadatacenter.org%2Ffolders%2F02d81b00-f4b4-4467-8721-72a90c7998c2;
+}
+```
+
+### 4. Accessing Forms
+Once configured, users can access the templates using the following URLs:
+- **Genomica Form:** `www.bioforms.carrerasresearch.org/genomica`
+- **Test Form:** `www.bioforms.carrerasresearch.org/test`
+
+### 5. Storing Responses
+- **CEDAR Directory:** Responses will be automatically saved in the specified folder.
+- **SharePoint Integration:**
+  - A new folder will be created using the template name and folder ID.
+  - Example folder name:
+    ```
+    TEMPLATE-NAME_02d81b00-f4b4-4467-8721-72a90c7998c2
+    ```
+  - Excel-formatted responses will be uploaded to the corresponding SharePoint folder.
+
 
 ## Conclusion
 
